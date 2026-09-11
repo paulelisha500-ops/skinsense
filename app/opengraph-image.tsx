@@ -3,6 +3,8 @@ import { ImageResponse } from "next/og";
 export const alt = "SkinSense — Understand your skin. Then actually improve it.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+// Required for the static export (STATIC_EXPORT=1); harmless on Vercel.
+export const dynamic = "force-static";
 
 const MARK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="96" height="96" fill="none"><defs><linearGradient id="g" x1="10" y1="8" x2="38" y2="42" gradientUnits="userSpaceOnUse"><stop stop-color="#E6C9A3"/><stop offset="1" stop-color="#B07A4A"/></linearGradient></defs><circle cx="24" cy="24" r="21.2" stroke="#F3E8DA" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="88 22"/><path d="M24 9.5c6.4 4.6 10.6 10.2 10.6 15.6 0 6-4.7 10.4-10.6 10.4S13.4 31.1 13.4 25.1c0-5.4 4.2-11 10.6-15.6z" fill="url(#g)"/><path d="M24 15.5v15.8" stroke="#3B2A20" stroke-width="1.5" stroke-linecap="round"/><path d="M24 22.6l4.4-3.6M24 27.4l-4.4-3.6" stroke="#3B2A20" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 

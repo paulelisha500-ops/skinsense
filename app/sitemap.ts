@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
+// Required for the static export (STATIC_EXPORT=1); harmless on Vercel.
+export const dynamic = "force-static";
+
 const ROUTES = [
   { path: "", priority: 1 },
   { path: "/about", priority: 0.8 },
