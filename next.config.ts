@@ -11,7 +11,15 @@ const staticExport = process.env.STATIC_EXPORT === "1";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  ...(staticExport ? { output: "export", trailingSlash: true } : {}),
+  // STATIC_BASE_PATH mounts the export under a sub-path (the Hugging Face Space
+  // serves it at /site alongside the Gradio app).
+  ...(staticExport
+    ? {
+        output: "export" as const,
+        trailingSlash: true,
+        ...(process.env.STATIC_BASE_PATH ? { basePath: process.env.STATIC_BASE_PATH } : {}),
+      }
+    : {}),
   images: {
     unoptimized: staticExport,
     remotePatterns: [
