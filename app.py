@@ -518,6 +518,17 @@ def queue_reminder(email, message):
             save_users()
 
 
+def delete_user(email):
+    """Drop a user's record. Goes through the normal save path, so the deletion
+    sticks; editing users.json on the Hub by hand would be overwritten by the next
+    save from memory. Returns True if a record was removed."""
+    with USERS_LOCK:
+        if load_users().pop(email.strip().lower(), None) is None:
+            return False
+        save_users()
+        return True
+
+
 def pop_pending_reminder(email):
     with USERS_LOCK:
         users = load_users()
@@ -1929,6 +1940,30 @@ def send_bulk_reminder_fn(current, message):
                         + str(sent) + " emailed."), build_admin_table_html())
 
 
+def remove_user_fn(current, selected_email, confirmed):
+    """Returns: admin_remove_status, admin_table_output, admin_user_select,
+    admin_remove_confirm."""
+    if not is_admin(current):
+        return status_note("Not authorised.", bad=True), "", gr.update(), gr.update()
+    keep_table = build_admin_table_html()
+    if not selected_email:
+        return (status_note("Select a user first.", bad=True), keep_table,
+                gr.update(), gr.update())
+    if is_admin(selected_email):
+        return (status_note("The admin account can't be removed.", bad=True), keep_table,
+                gr.update(), gr.update())
+    if not confirmed:
+        return (status_note("Tick the box to confirm removing " + esc(selected_email) + ".",
+                            bad=True), keep_table, gr.update(), gr.update())
+    if delete_user(selected_email):
+        note = status_note("Removed " + esc(selected_email) + ".")
+    else:
+        note = status_note(esc(selected_email) + " was already gone.", bad=True)
+    choices = [r["email"] for r in get_all_users_summary()]
+    return (note, build_admin_table_html(), gr.update(choices=choices, value=None),
+            gr.update(value=False))
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # CSS — espresso / coffee / tan / cream
 # ══════════════════════════════════════════════════════════════════════════════
@@ -2804,6 +2839,19 @@ with gr.Blocks(title="SkinSense — AI Skin Analysis") as demo:
             send_bulk_btn = gr.Button("Remind all inactive 3+ days",
                                       elem_classes=["ss-ghost-btn"])
         admin_status = gr.HTML("")
+
+        gr.HTML(divider())
+        gr.HTML(section_header(3, "Remove a user",
+                               "Deletes the record of the user chosen in “Select user” "
+                               "above. For test accounts and deletion requests."))
+        with gr.Row():
+            with gr.Column(scale=2):
+                admin_remove_confirm = gr.Checkbox(
+                    label="Yes, remove the selected user", value=False)
+            with gr.Column(scale=1, min_width=160):
+                remove_user_btn = gr.Button("Remove selected user",
+                                            elem_classes=["ss-ghost-btn"])
+        admin_remove_status = gr.HTML("")
         gr.HTML(DASH_FOOTER)
 
     # ══ WIRING ═══════════════════════════════════════════════════════════════
@@ -2884,6 +2932,11 @@ with gr.Blocks(title="SkinSense — AI Skin Analysis") as demo:
 
     send_bulk_btn.click(fn=send_bulk_reminder_fn, inputs=[current_email, admin_reminder_msg],
                         outputs=[admin_status, admin_table_output])
+
+    remove_user_btn.click(fn=remove_user_fn,
+                          inputs=[current_email, admin_user_select, admin_remove_confirm],
+                          outputs=[admin_remove_status, admin_table_output,
+                                   admin_user_select, admin_remove_confirm])
 
 # None of these handlers are meant to be called as an API: keep every event UI-only.
 for _fn in demo.fns.values():
