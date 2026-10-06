@@ -1,0 +1,111 @@
+<!--
+  SkinSense — streak reminder email (EmailJS template_cxdpu0j)
+  Subject:  {{headline}}
+  To email: {{to_email}}      From name: SkinSense
+  Variables sent by app.py: to_email, name, headline, message, streak,
+  best_streak, streak_line, app_url
+-->
+<div style="margin:0;padding:0;background:#FAF5EE;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAF5EE;">
+  <tr>
+    <td align="center" style="padding:32px 14px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
+
+        <!-- wordmark -->
+        <tr>
+          <td style="padding:0 6px 18px;font-family:Helvetica,Arial,sans-serif;">
+            <span style="display:inline-block;width:28px;height:28px;border-radius:50%;background:#B07A4A;border:3px solid #E6C9A3;vertical-align:middle;"></span>
+            <span style="font-size:20px;font-weight:700;color:#2A1D15;letter-spacing:-0.3px;vertical-align:middle;padding-left:8px;">Skin<span style="color:#B07A4A;">Sense</span></span>
+          </td>
+        </tr>
+
+        <!-- card -->
+        <tr>
+          <td style="background:#FFFFFF;border:1px solid #E9DCCB;border-radius:18px;overflow:hidden;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+              <!-- header -->
+              <tr>
+                <td bgcolor="#3B2A20" style="background:#3B2A20;background-image:linear-gradient(135deg,#3B2A20 0%,#5A3E2B 100%);padding:28px 32px;font-family:Helvetica,Arial,sans-serif;border-radius:18px 18px 0 0;">
+                  <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E6C9A3;font-weight:700;">Daily routine reminder</div>
+                  <div style="font-size:24px;line-height:1.3;color:#FFFFFF;font-weight:700;margin-top:8px;">{{headline}}</div>
+                </td>
+              </tr>
+
+              <!-- greeting + message -->
+              <tr>
+                <td style="padding:28px 32px 4px;font-family:Helvetica,Arial,sans-serif;">
+                  <p style="margin:0 0 10px;font-size:15px;line-height:1.6;color:#2A1D15;font-weight:700;">Hi {{name}},</p>
+                  <p style="margin:0;font-size:15px;line-height:1.65;color:#6E5645;">{{message}}</p>
+                </td>
+              </tr>
+
+              <!-- streak panel -->
+              <tr>
+                <td style="padding:22px 32px 4px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F6EEE3" style="background:#F6EEE3;border:1px solid #E9DCCB;border-radius:14px;">
+                    <tr>
+                      <td width="50%" align="center" style="padding:20px 10px;font-family:Helvetica,Arial,sans-serif;border-right:1px solid #E9DCCB;">
+                        <div style="font-size:34px;line-height:1;font-weight:800;color:#3B2A20;">&#128293; {{streak}}</div>
+                        <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8E7563;font-weight:700;margin-top:8px;">Current streak (days)</div>
+                      </td>
+                      <td width="50%" align="center" style="padding:20px 10px;font-family:Helvetica,Arial,sans-serif;">
+                        <div style="font-size:34px;line-height:1;font-weight:800;color:#B07A4A;">{{best_streak}}</div>
+                        <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8E7563;font-weight:700;margin-top:8px;">Best streak (days)</div>
+                      </td>
+                    </tr>
+                  </table>
+                  <p style="margin:14px 0 0;font-size:14px;line-height:1.6;color:#6E5645;">{{streak_line}}</p>
+                </td>
+              </tr>
+
+              <!-- routine checklist -->
+              <tr>
+                <td style="padding:22px 32px 4px;font-family:Helvetica,Arial,sans-serif;">
+                  <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8A5A36;font-weight:700;margin-bottom:10px;">Today's two-minute routine</div>
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr><td style="padding:5px 0;font-size:14px;line-height:1.5;color:#6E5645;"><span style="color:#8A5A36;font-weight:700;">1.</span>&nbsp; Cleanse gently for 60 seconds</td></tr>
+                    <tr><td style="padding:5px 0;font-size:14px;line-height:1.5;color:#6E5645;"><span style="color:#8A5A36;font-weight:700;">2.</span>&nbsp; Apply your treatment or serum</td></tr>
+                    <tr><td style="padding:5px 0;font-size:14px;line-height:1.5;color:#6E5645;"><span style="color:#8A5A36;font-weight:700;">3.</span>&nbsp; Moisturise while skin is still slightly damp</td></tr>
+                    <tr><td style="padding:5px 0;font-size:14px;line-height:1.5;color:#6E5645;"><span style="color:#8A5A36;font-weight:700;">4.</span>&nbsp; Morning: finish with SPF, every day</td></tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- button -->
+              <tr>
+                <td align="center" style="padding:26px 32px 8px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td align="center" bgcolor="#3B2A20" style="border-radius:999px;background:#3B2A20;background-image:linear-gradient(135deg,#3B2A20 0%,#8A5A36 100%);">
+                        <a href="{{app_url}}" target="_blank" style="display:inline-block;padding:15px 34px;font-family:Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:999px;">Open SkinSense &rarr;</a>
+                      </td>
+                    </tr>
+                  </table>
+                  <p style="margin:12px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:12px;color:#8E7563;">Mark today's routine done on your dashboard to count it.</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding:22px 32px 28px;font-family:Helvetica,Arial,sans-serif;">
+                  <div style="height:1px;line-height:1px;background:#E9DCCB;">&nbsp;</div>
+                  <p style="margin:16px 0 0;font-size:12px;line-height:1.6;color:#8E7563;">Most routines need four to eight weeks of consistent use before a visible difference. If your skin is painful, bleeding, spreading or changing quickly, please see a dermatologist.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- footer -->
+        <tr>
+          <td style="padding:18px 10px 0;text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;color:#8E7563;">
+            SkinSense is an educational screening tool, not a medical device.<br>
+            You're receiving this because you signed up for SkinSense. Don't want reminders? Reply "stop" and we'll turn them off.
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</div>

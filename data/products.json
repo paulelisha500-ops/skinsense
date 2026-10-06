@@ -1,0 +1,342 @@
+[
+  {
+    "id": "P001",
+    "name": "CeraVe Foaming Facial Cleanser",
+    "type": "cleanser",
+    "targets": ["acne", "oily_skin"],
+    "skin_types": ["oily", "combination"],
+    "key_ingredients": ["niacinamide", "ceramides", "hyaluronic acid"],
+    "price_usd": 14.99,
+    "url": "https://www.cerave.com"
+  },
+  {
+    "id": "P002",
+    "name": "Vanicream Gentle Facial Cleanser",
+    "type": "cleanser",
+    "targets": ["rosacea", "eczema"],
+    "skin_types": ["sensitive", "dry"],
+    "key_ingredients": ["glycerin", "fragrance-free base"],
+    "price_usd": 9.99,
+    "url": "https://www.vanicream.com"
+  },
+  {
+    "id": "P003",
+    "name": "La Roche-Posay Toleriane Hydrating Gentle Cleanser",
+    "type": "cleanser",
+    "targets": ["dry_skin", "normal_skin"],
+    "skin_types": ["dry", "normal", "sensitive"],
+    "key_ingredients": ["ceramide-3", "niacinamide", "glycerin"],
+    "price_usd": 16.99,
+    "url": "https://www.laroche-posay.us"
+  },
+  {
+    "id": "P004",
+    "name": "CeraVe Hydrating Cream-to-Foam Cleanser",
+    "type": "cleanser",
+    "targets": ["hyperpigmentation"],
+    "skin_types": ["normal", "combination", "dry"],
+    "key_ingredients": ["ceramides", "amino acids", "hyaluronic acid"],
+    "price_usd": 15.99,
+    "url": "https://www.cerave.com"
+  },
+  {
+    "id": "P005",
+    "name": "Paula's Choice Skin Perfecting 2% BHA Liquid Exfoliant",
+    "type": "exfoliant",
+    "targets": ["acne", "oily_skin"],
+    "skin_types": ["oily", "combination"],
+    "key_ingredients": ["salicylic acid 2%", "green tea extract"],
+    "price_usd": 35.0,
+    "url": "https://www.paulaschoice.com"
+  },
+  {
+    "id": "P006",
+    "name": "The Ordinary Glycolic Acid 7% Exfoliating Toner",
+    "type": "exfoliant",
+    "targets": ["hyperpigmentation", "normal_skin"],
+    "skin_types": ["normal", "combination", "oily"],
+    "key_ingredients": ["glycolic acid 7%", "aloe vera", "ginseng root"],
+    "price_usd": 10.9,
+    "url": "https://theordinary.com"
+  },
+  {
+    "id": "P007",
+    "name": "The INKEY List PHA Gentle Exfoliating Toner",
+    "type": "exfoliant",
+    "targets": ["dry_skin"],
+    "skin_types": ["dry", "sensitive"],
+    "key_ingredients": ["gluconolactone (PHA)", "glycerin"],
+    "price_usd": 12.99,
+    "url": "https://www.theinkeylist.com"
+  },
+  {
+    "id": "P008",
+    "name": "The Ordinary Niacinamide 10% + Zinc 1%",
+    "type": "serum",
+    "targets": ["acne", "oily_skin"],
+    "skin_types": ["oily", "combination", "normal"],
+    "key_ingredients": ["niacinamide 10%", "zinc PCA 1%"],
+    "price_usd": 7.9,
+    "url": "https://theordinary.com"
+  },
+  {
+    "id": "P009",
+    "name": "The Ordinary Alpha Arbutin 2% + Hyaluronic Acid",
+    "type": "serum",
+    "targets": ["hyperpigmentation"],
+    "skin_types": ["all"],
+    "key_ingredients": ["alpha arbutin 2%", "hyaluronic acid"],
+    "price_usd": 9.8,
+    "url": "https://theordinary.com"
+  },
+  {
+    "id": "P010",
+    "name": "La Roche-Posay Hyalu B5 Hydrating Serum",
+    "type": "serum",
+    "targets": ["dry_skin", "normal_skin"],
+    "skin_types": ["dry", "normal", "sensitive"],
+    "key_ingredients": ["hyaluronic acid", "vitamin B5", "madecassoside"],
+    "price_usd": 41.99,
+    "url": "https://www.laroche-posay.us"
+  },
+  {
+    "id": "P011",
+    "name": "Avene Antirougeurs Fort Soothing Concentrate",
+    "type": "serum",
+    "targets": ["rosacea"],
+    "skin_types": ["sensitive"],
+    "key_ingredients": ["ruscus extract", "thermal spring water", "dextran sulfate"],
+    "price_usd": 34.0,
+    "url": "https://www.aveneusa.com"
+  },
+  {
+    "id": "P012",
+    "name": "Vichy Mineral 89 Hyaluronic Acid Booster",
+    "type": "serum",
+    "targets": ["eczema"],
+    "skin_types": ["sensitive", "dry"],
+    "key_ingredients": ["hyaluronic acid", "15 mineral thermal water"],
+    "price_usd": 32.0,
+    "url": "https://www.vichyusa.com"
+  },
+  {
+    "id": "P013",
+    "name": "CeraVe Moisturizing Cream",
+    "type": "moisturizer",
+    "targets": ["dry_skin", "eczema"],
+    "skin_types": ["dry", "sensitive"],
+    "key_ingredients": ["ceramides 1, 3, 6-II", "hyaluronic acid", "MVE technology"],
+    "price_usd": 19.99,
+    "url": "https://www.cerave.com"
+  },
+  {
+    "id": "P014",
+    "name": "Neutrogena Hydro Boost Water Gel",
+    "type": "moisturizer",
+    "targets": ["oily_skin", "acne"],
+    "skin_types": ["oily", "combination"],
+    "key_ingredients": ["hyaluronic acid", "glycerin"],
+    "price_usd": 22.99,
+    "url": "https://www.neutrogena.com"
+  },
+  {
+    "id": "P015",
+    "name": "Avene Antirougeurs Calm Soothing Repair Mask-Cream",
+    "type": "moisturizer",
+    "targets": ["rosacea"],
+    "skin_types": ["sensitive"],
+    "key_ingredients": ["thermal spring water", "glycerin", "sweet almond extract"],
+    "price_usd": 29.0,
+    "url": "https://www.aveneusa.com"
+  },
+  {
+    "id": "P016",
+    "name": "CeraVe PM Facial Moisturizing Lotion",
+    "type": "moisturizer",
+    "targets": ["hyperpigmentation", "normal_skin"],
+    "skin_types": ["normal", "combination", "oily"],
+    "key_ingredients": ["niacinamide", "ceramides", "hyaluronic acid"],
+    "price_usd": 17.99,
+    "url": "https://www.cerave.com"
+  },
+  {
+    "id": "P017",
+    "name": "EltaMD UV Clear Broad-Spectrum SPF 46",
+    "type": "sunscreen",
+    "targets": ["acne", "oily_skin", "rosacea", "hyperpigmentation"],
+    "skin_types": ["all", "sensitive", "oily"],
+    "key_ingredients": ["zinc oxide 9%", "niacinamide", "lactic acid"],
+    "price_usd": 45.0,
+    "url": "https://eltamd.com"
+  },
+  {
+    "id": "P018",
+    "name": "La Roche-Posay Anthelios Melt-In Milk SPF 60",
+    "type": "sunscreen",
+    "targets": ["dry_skin", "normal_skin", "eczema"],
+    "skin_types": ["dry", "normal", "sensitive"],
+    "key_ingredients": ["cell-ox shield", "glycerin", "shea butter"],
+    "price_usd": 26.99,
+    "url": "https://www.laroche-posay.us"
+  },
+  {
+    "id": "P019",
+    "name": "Differin Adapalene Gel 0.1%",
+    "type": "treatment",
+    "targets": ["acne"],
+    "skin_types": ["oily", "combination", "normal"],
+    "key_ingredients": ["adapalene 0.1% (retinoid)"],
+    "price_usd": 14.88,
+    "url": "https://www.differin.com"
+  },
+  {
+    "id": "P020",
+    "name": "The Ordinary Azelaic Acid Suspension 10%",
+    "type": "treatment",
+    "targets": ["rosacea", "hyperpigmentation"],
+    "skin_types": ["all", "sensitive"],
+    "key_ingredients": ["azelaic acid 10%"],
+    "price_usd": 12.1,
+    "url": "https://theordinary.com"
+  },
+  {
+    "id": "P021",
+    "name": "Aveeno Eczema Therapy Itch Relief Balm",
+    "type": "treatment",
+    "targets": ["eczema"],
+    "skin_types": ["dry", "sensitive"],
+    "key_ingredients": ["colloidal oatmeal 1%", "ceramides", "dimethicone"],
+    "price_usd": 15.49,
+    "url": "https://www.aveeno.com"
+  },
+  {
+    "id": "P022",
+    "name": "The Ordinary 100% Plant-Derived Squalane",
+    "type": "treatment",
+    "targets": ["dry_skin"],
+    "skin_types": ["dry", "sensitive"],
+    "key_ingredients": ["squalane (sugarcane-derived)"],
+    "price_usd": 9.5,
+    "url": "https://theordinary.com"
+  },
+  {
+    "id": "P023",
+    "name": "The Ordinary Salicylic Acid 2% Anhydrous Solution",
+    "type": "treatment",
+    "targets": ["oily_skin"],
+    "skin_types": ["oily", "combination"],
+    "key_ingredients": ["salicylic acid 2%", "squalane"],
+    "price_usd": 9.7,
+    "url": "https://theordinary.com"
+  },
+  {
+    "id": "P024",
+    "name": "CeraVe Resurfacing Retinol Serum",
+    "type": "treatment",
+    "targets": ["normal_skin"],
+    "skin_types": ["normal", "combination"],
+    "key_ingredients": ["encapsulated retinol", "niacinamide", "ceramides"],
+    "price_usd": 21.99,
+    "url": "https://www.cerave.com"
+  },
+  {
+    "id": "P025",
+    "name": "La Roche-Posay Effaclar Purifying Foaming Gel",
+    "type": "cleanser",
+    "targets": ["acne", "oily_skin"],
+    "skin_types": ["oily", "combination"],
+    "key_ingredients": ["zinc pidolate", "thermal spring water"],
+    "price_usd": 16.99,
+    "url": "https://www.laroche-posay.us"
+  },
+  {
+    "id": "P026",
+    "name": "Cetaphil Gentle Skin Cleanser",
+    "type": "cleanser",
+    "targets": ["eczema", "rosacea", "dry_skin", "normal_skin"],
+    "skin_types": ["sensitive", "dry", "normal"],
+    "key_ingredients": ["glycerin", "panthenol", "niacinamide"],
+    "price_usd": 13.49,
+    "url": "https://www.cetaphil.com"
+  },
+  {
+    "id": "P027",
+    "name": "Naturium Mandelic Acid 12% Serum",
+    "type": "exfoliant",
+    "targets": ["hyperpigmentation", "acne", "oily_skin"],
+    "skin_types": ["sensitive", "combination", "oily"],
+    "key_ingredients": ["mandelic acid 12%", "hyaluronic acid"],
+    "price_usd": 22.0,
+    "url": "https://naturium.com"
+  },
+  {
+    "id": "P028",
+    "name": "SkinCeuticals C E Ferulic",
+    "type": "serum",
+    "targets": ["hyperpigmentation", "normal_skin"],
+    "skin_types": ["normal", "dry"],
+    "key_ingredients": ["l-ascorbic acid 15%", "vitamin E", "ferulic acid"],
+    "price_usd": 182.0,
+    "url": "https://www.skinceuticals.com"
+  },
+  {
+    "id": "P029",
+    "name": "Good Molecules Discoloration Correcting Serum",
+    "type": "serum",
+    "targets": ["hyperpigmentation", "acne"],
+    "skin_types": ["all"],
+    "key_ingredients": ["tranexamic acid 2%", "niacinamide"],
+    "price_usd": 12.0,
+    "url": "https://goodmolecules.com"
+  },
+  {
+    "id": "P030",
+    "name": "Eucerin Advanced Repair Face Cream",
+    "type": "moisturizer",
+    "targets": ["dry_skin", "eczema", "normal_skin"],
+    "skin_types": ["dry", "sensitive"],
+    "key_ingredients": ["ceramide-3", "urea", "glycerin"],
+    "price_usd": 13.99,
+    "url": "https://www.eucerinus.com"
+  },
+  {
+    "id": "P031",
+    "name": "La Roche-Posay Toleriane Double Repair Face Moisturizer",
+    "type": "moisturizer",
+    "targets": ["rosacea", "normal_skin", "oily_skin", "acne"],
+    "skin_types": ["all", "sensitive"],
+    "key_ingredients": ["ceramide-3", "niacinamide", "glycerin"],
+    "price_usd": 22.99,
+    "url": "https://www.laroche-posay.us"
+  },
+  {
+    "id": "P032",
+    "name": "Vanicream Sunscreen Sport Broad Spectrum SPF 35",
+    "type": "sunscreen",
+    "targets": ["eczema", "rosacea", "dry_skin", "acne", "oily_skin", "hyperpigmentation", "normal_skin"],
+    "skin_types": ["sensitive", "all"],
+    "key_ingredients": ["zinc oxide", "octinoxate-free base"],
+    "price_usd": 13.99,
+    "url": "https://www.vanicream.com"
+  },
+  {
+    "id": "P033",
+    "name": "Paula's Choice 10% Azelaic Acid Booster",
+    "type": "treatment",
+    "targets": ["rosacea", "acne", "hyperpigmentation"],
+    "skin_types": ["all", "sensitive"],
+    "key_ingredients": ["azelaic acid 10%", "salicylic acid", "adenosine"],
+    "price_usd": 42.0,
+    "url": "https://www.paulaschoice.com"
+  },
+  {
+    "id": "P034",
+    "name": "Vaseline Healing Jelly (slugging occlusive)",
+    "type": "treatment",
+    "targets": ["dry_skin", "eczema"],
+    "skin_types": ["dry", "sensitive"],
+    "key_ingredients": ["petrolatum 100%"],
+    "price_usd": 4.99,
+    "url": "https://www.vaseline.com"
+  }
+]
