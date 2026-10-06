@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://elisha622-skinsense.hf.space/site
+Sitemap: https://elisha622-skinsense.hf.space/site/sitemap.xml

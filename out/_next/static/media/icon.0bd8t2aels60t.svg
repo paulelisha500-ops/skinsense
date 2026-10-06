@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <style>
+    .ring { stroke: #B07A4A; }
+    .vein { stroke: #FFFDF9; }
+    @media (prefers-color-scheme: dark) {
+      .ring { stroke: #E9D8C2; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="ss-leaf" x1="10" y1="8" x2="38" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C8A27C"/>
+      <stop offset="1" stop-color="#6F4E37"/>
+    </linearGradient>
+  </defs>
+  <circle class="ring" cx="24" cy="24" r="21.2" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="88 22"/>
+  <path d="M24 9.5c6.4 4.6 10.6 10.2 10.6 15.6 0 6-4.7 10.4-10.6 10.4S13.4 31.1 13.4 25.1c0-5.4 4.2-11 10.6-15.6z" fill="url(#ss-leaf)"/>
+  <path class="vein" d="M24 15.5v15.8" stroke-width="1.7" stroke-linecap="round"/>
+  <path class="vein" d="M24 22.6l4.4-3.6M24 27.4l-4.4-3.6" stroke-width="1.7" stroke-linecap="round"/>
+</svg>
