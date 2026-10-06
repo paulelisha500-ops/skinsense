@@ -1,0 +1,64 @@
+name: Deploy to Hugging Face Space
+
+# Every merge to main deploys the Gradio app (and its /site copy of the
+# marketing site) to https://huggingface.co/spaces/Elisha622/skinsense
+#
+# Edit on GitHub only. Each deploy REPLACES the Space's contents with a single
+# fresh commit built from this repo, so changes made directly on Hugging Face
+# are overwritten.
+#
+# Setup: create a Hugging Face token with WRITE access and add it as the repo
+# secret HF_TOKEN (Settings -> Secrets and variables -> Actions).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: hf-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build the marketing site for /site
+        working-directory: web
+        run: |
+          npm ci
+          npx next build
+        env:
+          STATIC_EXPORT: "1"
+          STATIC_BASE_PATH: /site
+          NEXT_PUBLIC_SITE_URL: https://elisha622-skinsense.hf.space/site
+          NEXT_PUBLIC_APP_URL: https://elisha622-skinsense.hf.space
+
+      - name: Assemble the Space
+        run: |
+          mkdir /tmp/space
+          cp -r app.py config.py requirements.txt README.md data emails models src /tmp/space/
+          cp -r web/out /tmp/space/site
+          # Hugging Face rejects binaries that aren't tracked by LFS.
+          cp deploy/hf.gitattributes /tmp/space/.gitattributes
+
+      - name: Push to the Space
+        working-directory: /tmp/space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          test -n "$HF_TOKEN" || { echo "::error::HF_TOKEN secret is not set"; exit 1; }
+          git init -q -b main
+          git lfs install --local
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_REPOSITORY}@${GITHUB_SHA}"
+          git push --force "https://Elisha622:${HF_TOKEN}@huggingface.co/spaces/Elisha622/skinsense" main

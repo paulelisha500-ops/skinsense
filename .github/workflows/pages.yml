@@ -1,0 +1,56 @@
+name: Deploy site to GitHub Pages
+
+# Builds web/ as a static export and publishes it at
+# https://paulelisha500-ops.github.io/skinsense/
+# One-time setup: repo Settings -> Pages -> Source: "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+    paths: ["web/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npx next build
+        env:
+          STATIC_EXPORT: "1"
+          # Must match the repo name, or assets 404 on Pages.
+          STATIC_BASE_PATH: /skinsense
+          NEXT_PUBLIC_SITE_URL: https://paulelisha500-ops.github.io/skinsense
+          NEXT_PUBLIC_APP_URL: https://elisha622-skinsense.hf.space
+      - run: touch out/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
