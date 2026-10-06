@@ -21,7 +21,8 @@ const nextConfig: NextConfig = {
       }
     : {}),
   images: {
-    unoptimized: staticExport,
+    // Static hosts have no optimizer, so the Unsplash CDN resizes instead.
+    ...(staticExport ? { loader: "custom" as const, loaderFile: "./lib/imageLoader.ts" } : {}),
     remotePatterns: [
       {
         protocol: "https",

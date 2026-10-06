@@ -14,6 +14,7 @@ import time
 import atexit
 import urllib.error
 import urllib.request
+import warnings
 
 import gradio as gr
 import torch
@@ -26,6 +27,10 @@ import config
 from src.preprocessing.image_processor import ImageProcessor
 from src.training.train import build_model
 from src.recommendation.routine import build_routine
+
+# Gradio reads a status constant newer Starlette deprecates, which printed two
+# warning lines on every click and buried real errors in the Space logs.
+warnings.filterwarnings("ignore", message=".*HTTP_422_UNPROCESSABLE_ENTITY")
 
 # ── Configuration ───────────────────────────────────────────────────────────────
 # Public EmailJS identifiers are safe to ship. Mail is sent from the server with
@@ -81,14 +86,14 @@ RED   = "#B3402F"
 U = "https://images.unsplash.com/"
 IMG = {
     # each URL audited visually before use
-    "hero_face": U + "photo-1531123897727-8f129e1688ce?w=900&q=80",   # close-up portrait
-    "hero_care": U + "photo-1616394584738-fc6e612e71b9?w=900&q=80",   # facial treatment
-    "step_scan": U + "photo-1509967419530-da38b4704bc6?w=700&q=80",   # portrait, hand to face
-    "step_read": U + "photo-1526510747491-58f928ec870f?w=700&q=80",   # portrait, clear skin
-    "step_plan": U + "photo-1598440947619-2c35fc9aa908?w=700&q=80",   # skincare products
-    "about":     U + "photo-1570172619644-dfd03ed5d881?w=900&q=80",   # treatment being applied
-    "routine":   U + "photo-1556228720-195a672e8a03?w=700&q=80",      # cleanser + texture
-    "face1":     U + "photo-1580489944761-15a19d654956?w=400&q=80",   # smiling, clear skin
+    "hero_face": U + "photo-1531123897727-8f129e1688ce?w=900&q=80&auto=format",   # close-up portrait
+    "hero_care": U + "photo-1616394584738-fc6e612e71b9?w=900&q=80&auto=format",   # facial treatment
+    "step_scan": U + "photo-1509967419530-da38b4704bc6?w=700&q=80&auto=format",   # portrait, hand to face
+    "step_read": U + "photo-1526510747491-58f928ec870f?w=700&q=80&auto=format",   # portrait, clear skin
+    "step_plan": U + "photo-1598440947619-2c35fc9aa908?w=700&q=80&auto=format",   # skincare products
+    "about":     U + "photo-1570172619644-dfd03ed5d881?w=900&q=80&auto=format",   # treatment being applied
+    "routine":   U + "photo-1556228720-195a672e8a03?w=700&q=80&auto=format",      # cleanser + texture
+    "face1":     U + "photo-1580489944761-15a19d654956?w=400&q=80&auto=format",   # smiling, clear skin
 }
 
 # ── Logo ────────────────────────────────────────────────────────────────────────
@@ -1739,14 +1744,17 @@ def status_note(text, bad=False):
 
 def verify_otp_wrapper(entered, pending_email):
     """Returns: otp_screen, profile_screen, main_screen, admin_screen, verify_status,
-    current_email, profile_state, otp_input; populate_after_signin fills the new screen.
-    The signed-in email is the one the code was sent to — never a client-supplied value."""
+    current_email, profile_state, otp_input, otp_status_display; populate_after_signin
+    fills the new screen. The signed-in email is the one the code was sent to — never a
+    client-supplied value. Leaving the screen clears its "we sent a code to" note, so the
+    next person to sign in on this browser never sees the previous address."""
     stay = (gr.update(), gr.update(), gr.update(), gr.update())
     if not (entered or "").strip():
-        return stay + (status_note("Enter the 6-digit code.", bad=True), "", {}, gr.update())
+        return stay + (status_note("Enter the 6-digit code.", bad=True), "", {}, gr.update(),
+                       gr.update())
     ok, err = check_otp(pending_email, entered)
     if not ok:
-        return stay + (status_note(err, bad=True), "", {}, gr.update())
+        return stay + (status_note(err, bad=True), "", {}, gr.update(), gr.update())
 
     email = pending_email
     user = record_login(email)
@@ -1754,20 +1762,21 @@ def verify_otp_wrapper(entered, pending_email):
 
     if is_admin(email):
         return (leave_otp, gr.update(), gr.update(), gr.update(visible=True),
-                "", email, {}, "")
+                "", email, {}, "", "")
 
     profile = user.get("profile") or {}
     if user.get("profile_done") or profile:
         # returning user — straight to the dashboard
         return (leave_otp, gr.update(), gr.update(visible=True), gr.update(),
-                "", email, profile, "")
+                "", email, profile, "", "")
 
     return (leave_otp, gr.update(visible=True), gr.update(), gr.update(),
-            "", email, {}, "")
+            "", email, {}, "", "")
 
 
 def back_to_login():
-    return gr.update(visible=True), gr.update(visible=False)
+    """Returns: login_screen, otp_screen, otp_status_display (cleared on the way out)."""
+    return gr.update(visible=True), gr.update(visible=False), ""
 
 
 def save_profile_fn(email, name, age, weight, height, oily, fastfood, foodtype, sweets, sweet_qty):
@@ -2506,6 +2515,13 @@ HEAD_HTML = """
 </script>
 """
 
+# The default theme fetches Source Sans Pro from Google Fonts and Gradio waits for it
+# before drawing anything, yet CSS swaps every font for Geist (loaded in HEAD_HTML,
+# which doesn't block). Naming Geist here skips that fetch, so a slow font CDN can't
+# hold up the first paint.
+THEME = gr.themes.Default(font=["Geist", "-apple-system", "BlinkMacSystemFont",
+                                "Segoe UI", "sans-serif"])
+
 FORCE_LIGHT_JS = """
 () => {
     function forceLight() {
@@ -2806,7 +2822,7 @@ with gr.Blocks(title="SkinSense — AI Skin Analysis") as demo:
             fn=otp_sent_note, inputs=[pending_email], outputs=[otp_status_display])
 
     verify_outputs = [otp_screen, profile_screen, main_screen, admin_screen, verify_status,
-                      current_email, profile_state, otp_input]
+                      current_email, profile_state, otp_input, otp_status_display]
     signed_in_outputs = [greeting_output, history_output, admin_table_output,
                          admin_user_select]
     for trigger in (verify_otp_btn.click, otp_input.submit):
@@ -2818,7 +2834,8 @@ with gr.Blocks(title="SkinSense — AI Skin Analysis") as demo:
     resend_btn.click(fn=resend_otp_wrapper, inputs=[pending_email],
                      outputs=[otp_status_display])
 
-    back_btn.click(fn=back_to_login, inputs=[], outputs=[login_screen, otp_screen])
+    back_btn.click(fn=back_to_login, inputs=[],
+                   outputs=[login_screen, otp_screen, otp_status_display])
 
     continue_btn.click(
         fn=save_profile_fn,
@@ -2873,14 +2890,15 @@ for _fn in demo.fns.values():
 
 def serve_site(app):
     """Serve the static marketing site at /site. The mount goes at the front of
-    the route list so Gradio's own catch-all doesn't swallow /site first."""
+    the route list so Gradio's own catch-all doesn't swallow /site first. Gzip cuts
+    the site's HTML and scripts to about a quarter of their size on the wire."""
     if not os.path.isdir(SITE_DIR):
         return False
     from fastapi.staticfiles import StaticFiles
+    from starlette.middleware.gzip import GZipMiddleware
     from starlette.routing import Mount
-    app.router.routes.insert(
-        0, Mount("/site", app=StaticFiles(directory=SITE_DIR, html=True), name="site")
-    )
+    site = GZipMiddleware(StaticFiles(directory=SITE_DIR, html=True), minimum_size=1024)
+    app.router.routes.insert(0, Mount("/site", app=site, name="site"))
     return True
 
 
@@ -2890,7 +2908,7 @@ if __name__ == "__main__":
     # so a slow load showed a page of bare buttons. Client rendering avoids both.
     # prevent_thread_lock so the site can be attached to the running server,
     # then block_thread keeps the Space alive as usual.
-    demo.launch(css=CSS, head=HEAD_HTML, footer_links=[], ssr_mode=False,
+    demo.launch(css=CSS, head=HEAD_HTML, theme=THEME, footer_links=[], ssr_mode=False,
                 prevent_thread_lock=True)
     try:
         print("Marketing site at /site" if serve_site(demo.app) else "No site/ folder; /site off")
