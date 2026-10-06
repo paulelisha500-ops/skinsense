@@ -22,6 +22,8 @@ import numpy as np
 import cv2
 from PIL import Image
 from huggingface_hub import HfApi, hf_hub_download
+from starlette.middleware import Middleware
+from starlette.middleware.gzip import GZipMiddleware
 
 import config
 from src.preprocessing.image_processor import ImageProcessor
@@ -2888,6 +2890,25 @@ for _fn in demo.fns.values():
     _fn.api_visibility = "private"
 
 
+class GzipAppPage:
+    """Gzip the app's own page. It inlines the whole UI (about 190 KB of HTML) and
+    Hugging Face's proxy sends it uncompressed; gzipped it is about 23 KB. Only "/"
+    is touched, so Gradio's streaming updates and photo uploads pass straight through."""
+
+    def __init__(self, app):
+        self.app = app
+        self.gzip = GZipMiddleware(app, minimum_size=1024)
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http" and scope["path"] == "/":
+            await self.gzip(scope, receive, send)
+        else:
+            await self.app(scope, receive, send)
+
+
+APP_KWARGS = {"middleware": [Middleware(GzipAppPage)]}
+
+
 def serve_site(app):
     """Serve the static marketing site at /site. The mount goes at the front of
     the route list so Gradio's own catch-all doesn't swallow /site first. Gzip cuts
@@ -2895,7 +2916,6 @@ def serve_site(app):
     if not os.path.isdir(SITE_DIR):
         return False
     from fastapi.staticfiles import StaticFiles
-    from starlette.middleware.gzip import GZipMiddleware
     from starlette.routing import Mount
     site = GZipMiddleware(StaticFiles(directory=SITE_DIR, html=True), minimum_size=1024)
     app.router.routes.insert(0, Mount("/site", app=site, name="site"))
@@ -2909,7 +2929,7 @@ if __name__ == "__main__":
     # prevent_thread_lock so the site can be attached to the running server,
     # then block_thread keeps the Space alive as usual.
     demo.launch(css=CSS, head=HEAD_HTML, theme=THEME, footer_links=[], ssr_mode=False,
-                prevent_thread_lock=True)
+                app_kwargs=APP_KWARGS, prevent_thread_lock=True)
     try:
         print("Marketing site at /site" if serve_site(demo.app) else "No site/ folder; /site off")
     except Exception as e:
