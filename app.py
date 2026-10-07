@@ -2437,6 +2437,116 @@ HEAD_HTML = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* SkinSense loader (window.ssLoader below). Styled here rather than in CSS:  */
+/* Gradio only adds CSS once the app mounts, and this also covers first load. */
+.ss-loader {
+  position: fixed; inset: 0; z-index: 2147483000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(120% 90% at 50% 42%, #5A3E2B 0%, #3B2A20 55%, #2A1D15 100%);
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.22s ease, visibility 0s linear 0.22s;
+}
+.ss-loader.ss-loader-on { opacity: 1; visibility: visible; transition: opacity 0.22s ease; }
+.ss-loader-mark {
+  width: 104px; height: 104px; display: block;
+  filter: drop-shadow(0 0 22px rgba(176, 122, 74, 0.35));
+}
+/* the scan ring turns; a caramel wave sweeps down the leaf, then the leaf */
+/* flashes, like a sequential car indicator                                */
+.ss-ld-ring { transform-box: fill-box; transform-origin: center;
+              animation: ss-ld-spin 2.8s linear infinite; }
+.ss-ld-wave { animation: ss-ld-sweep 1.6s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+.ss-ld-leaf { fill: #6E4B33; animation: ss-ld-blink 1.6s ease-in-out infinite; }
+.ss-loader-word { margin-top: 20px; font-size: 1.4rem; font-weight: 750;
+                  letter-spacing: -0.025em; color: #F3E8DA; }
+.ss-loader-word span { color: #E6C9A3; }
+.ss-loader-msg { margin-top: 8px; min-height: 1.2em; font-size: 0.84rem;
+                 letter-spacing: 0.04em; color: #CDB49A; }
+@keyframes ss-ld-spin { to { transform: rotate(360deg); } }
+@keyframes ss-ld-sweep { 0% { transform: translateY(-18px); }
+                         70%, 100% { transform: translateY(40px); } }
+@keyframes ss-ld-blink { 0%, 55% { fill: #6E4B33; } 72% { fill: #B07A4A; } 100% { fill: #6E4B33; } }
+@media (prefers-reduced-motion: reduce) {
+  .ss-ld-ring, .ss-ld-wave { animation: none; }
+  .ss-ld-wave { transform: translateY(14px); }
+  .ss-ld-leaf { animation-duration: 2.4s; }
+}
+</style>
+<script>
+/* Full-screen loader: covers first load until the app has drawn, and any wait
+   wired with with_loader() in app.py. Waits under 250 ms never show it; once up
+   it stays at least 450 ms so the wave reads instead of flickering. */
+(function () {
+  var LEAF = 'M24 9.5c6.4 4.6 10.6 10.2 10.6 15.6 0 6-4.7 10.4-10.6 10.4S13.4 31.1 13.4 25.1' +
+             'c0-5.4 4.2-11 10.6-15.6z';
+  var MARK = '<svg class="ss-loader-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">' +
+    '<defs><clipPath id="ss-ld-clip"><path d="' + LEAF + '"/></clipPath>' +
+    '<linearGradient id="ss-ld-grad" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#B07A4A" stop-opacity="0"/>' +
+    '<stop offset="0.38" stop-color="#C9935F"/><stop offset="0.5" stop-color="#F3E8DA"/>' +
+    '<stop offset="0.62" stop-color="#C9935F"/>' +
+    '<stop offset="1" stop-color="#B07A4A" stop-opacity="0"/></linearGradient></defs>' +
+    '<circle class="ss-ld-ring" cx="24" cy="24" r="21.2" stroke="#8A5A36" stroke-width="2.4" ' +
+    'stroke-linecap="round" stroke-dasharray="88 22"/>' +
+    '<path class="ss-ld-leaf" d="' + LEAF + '" fill="#6E4B33"/>' +
+    '<g clip-path="url(#ss-ld-clip)"><rect class="ss-ld-wave" x="8" y="0" width="32" ' +
+    'height="18" fill="url(#ss-ld-grad)"/></g>' +
+    '<path d="M24 15.5v15.8M24 22.6l4.4-3.6M24 27.4l-4.4-3.6" stroke="#2A1D15" ' +
+    'stroke-width="1.5" stroke-linecap="round" opacity="0.85"/></svg>';
+  var el, msg, depth = 0, delay = null, fade = null, guard = null, since = 0;
+
+  function build() {
+    el = document.createElement('div');
+    el.className = 'ss-loader';
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    el.innerHTML = MARK + '<div class="ss-loader-word">Skin<span>Sense</span></div>' +
+      '<div class="ss-loader-msg"></div>';
+    msg = el.lastChild;
+    // on first load this runs from <head>, before <body> exists
+    (document.body || document.documentElement).appendChild(el);
+  }
+  function up() {
+    delay = null;
+    since = Date.now();
+    el.classList.add('ss-loader-on');
+  }
+  function down() {
+    clearTimeout(delay);
+    delay = null;
+    clearTimeout(guard);
+    fade = setTimeout(function () { el.classList.remove('ss-loader-on'); },
+                      Math.max(0, 450 - (Date.now() - since)));
+  }
+  function show(text, now) {
+    if (!el) { build(); }
+    depth += 1;
+    msg.textContent = text || 'Just a moment…';
+    clearTimeout(fade);
+    clearTimeout(guard);
+    guard = setTimeout(function () { depth = 0; down(); }, 60000);   // never get stuck
+    if (el.classList.contains('ss-loader-on') || delay) { return; }
+    if (now) { up(); } else { delay = setTimeout(up, 250); }
+  }
+  function hide() {
+    if (!el || !depth) { return; }
+    depth -= 1;
+    if (!depth) { down(); }
+  }
+  window.ssLoader = { show: show, hide: hide };
+
+  // First load: cover Gradio's boot screen until the app has drawn something.
+  var started = Date.now();
+  show('Loading SkinSense…', true);
+  (function ready() {
+    if (document.querySelector('.gradio-container .html-container') ||
+        Date.now() - started > 15000) { hide(); return; }
+    setTimeout(ready, 100);
+  })();
+})();
+</script>
 <script>
 (function () {
   document.documentElement.classList.add('ss-js');
@@ -2571,6 +2681,25 @@ FORCE_LIGHT_JS = """
     return [];
 }
 """
+
+
+HIDE_LOADER_JS = "() => { window.ssLoader && window.ssLoader.hide(); return []; }"
+
+
+def with_loader(trigger, message, *steps):
+    """Run `steps` (keyword arguments for an event listener) one after another behind
+    the SkinSense loader (window.ssLoader in HEAD_HTML), showing `message`.
+
+    In Gradio 6.13 a step that fails stops the rest of a .then() chain, so the loader
+    is closed on each step's failure as well as after the last step succeeds."""
+    trigger(fn=None, js="() => { window.ssLoader && window.ssLoader.show("
+                        + json.dumps(message) + "); return []; }")
+    event = trigger(**steps[0])
+    for step in steps[1:]:
+        event.failure(fn=None, js=HIDE_LOADER_JS)
+        event = event.then(**step)
+    event.failure(fn=None, js=HIDE_LOADER_JS)
+    event.success(fn=None, js=HIDE_LOADER_JS)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -2868,40 +2997,43 @@ with gr.Blocks(title="SkinSense — AI Skin Analysis") as demo:
     # (see otp_sent_note / populate_after_signin for why).
     send_otp_outputs = [pending_email, login_screen, otp_screen, login_status]
     for trigger in (send_otp_btn.click, email_input.submit):
-        trigger(fn=send_otp_wrapper, inputs=[email_input], outputs=send_otp_outputs).then(
-            fn=otp_sent_note, inputs=[pending_email], outputs=[otp_status_display])
+        with_loader(trigger, "Sending your code…",
+                    dict(fn=send_otp_wrapper, inputs=[email_input], outputs=send_otp_outputs),
+                    dict(fn=otp_sent_note, inputs=[pending_email],
+                         outputs=[otp_status_display]))
 
     verify_outputs = [otp_screen, profile_screen, main_screen, admin_screen, verify_status,
                       current_email, profile_state, otp_input, otp_status_display]
     signed_in_outputs = [greeting_output, history_output, admin_table_output,
                          admin_user_select]
     for trigger in (verify_otp_btn.click, otp_input.submit):
-        trigger(fn=verify_otp_wrapper, inputs=[otp_input, pending_email],
-                outputs=verify_outputs).then(
-            fn=populate_after_signin, inputs=[current_email, profile_state],
-            outputs=signed_in_outputs)
+        with_loader(trigger, "Checking your code…",
+                    dict(fn=verify_otp_wrapper, inputs=[otp_input, pending_email],
+                         outputs=verify_outputs),
+                    dict(fn=populate_after_signin, inputs=[current_email, profile_state],
+                         outputs=signed_in_outputs))
 
-    resend_btn.click(fn=resend_otp_wrapper, inputs=[pending_email],
-                     outputs=[otp_status_display])
+    with_loader(resend_btn.click, "Sending a new code…",
+                dict(fn=resend_otp_wrapper, inputs=[pending_email],
+                     outputs=[otp_status_display]))
 
     back_btn.click(fn=back_to_login, inputs=[],
                    outputs=[login_screen, otp_screen, otp_status_display])
 
-    continue_btn.click(
-        fn=save_profile_fn,
-        inputs=[current_email, name_input, age_input, weight_input, height_input,
-                oily_food_input, fastfood_input, foodtype_input,
-                sweets_input, sweet_qty_input],
-        outputs=[profile_state, profile_screen, main_screen]
-    ).then(fn=populate_dashboard, inputs=[current_email, profile_state],
-           outputs=[greeting_output, history_output])
+    with_loader(continue_btn.click, "Saving your profile…",
+                dict(fn=save_profile_fn,
+                     inputs=[current_email, name_input, age_input, weight_input, height_input,
+                             oily_food_input, fastfood_input, foodtype_input,
+                             sweets_input, sweet_qty_input],
+                     outputs=[profile_state, profile_screen, main_screen]),
+                dict(fn=populate_dashboard, inputs=[current_email, profile_state],
+                     outputs=[greeting_output, history_output]))
 
-    skip_profile_btn.click(
-        fn=skip_profile_fn,
-        inputs=[current_email],
-        outputs=[profile_state, profile_screen, main_screen]
-    ).then(fn=populate_dashboard, inputs=[current_email, profile_state],
-           outputs=[greeting_output, history_output])
+    with_loader(skip_profile_btn.click, "Opening your dashboard…",
+                dict(fn=skip_profile_fn, inputs=[current_email],
+                     outputs=[profile_state, profile_screen, main_screen]),
+                dict(fn=populate_dashboard, inputs=[current_email, profile_state],
+                     outputs=[greeting_output, history_output]))
 
     session_reset = [profile_state, current_email, baseline_state, pending_email]
     logout_btn.click(fn=logout_fn, inputs=[],
@@ -2909,38 +3041,45 @@ with gr.Blocks(title="SkinSense — AI Skin Analysis") as demo:
     admin_logout_btn.click(fn=logout_fn, inputs=[],
                            outputs=[landing_screen, admin_screen] + session_reset)
 
-    analyse_btn.click(
-        fn=analyse_skin,
-        inputs=[image_input, profile_state, current_email, baseline_state],
-        outputs=[result_output, scores_output, morning_output, night_output,
-                 tips_output, lifestyle_output, greeting_output, history_output,
-                 baseline_state, progress_output]
-    )
+    with_loader(analyse_btn.click, "Analysing your skin…",
+                dict(fn=analyse_skin,
+                     inputs=[image_input, profile_state, current_email, baseline_state],
+                     outputs=[result_output, scores_output, morning_output, night_output,
+                              tips_output, lifestyle_output, greeting_output, history_output,
+                              baseline_state, progress_output]))
 
     reset_baseline_btn.click(fn=reset_baseline_fn, inputs=[],
                              outputs=[baseline_state, progress_output])
 
-    routine_done_btn.click(fn=mark_routine_done_fn, inputs=[current_email],
-                           outputs=[greeting_output])
+    with_loader(routine_done_btn.click, "Saving your routine…",
+                dict(fn=mark_routine_done_fn, inputs=[current_email],
+                     outputs=[greeting_output]))
 
-    refresh_admin_btn.click(fn=refresh_admin_fn, inputs=[current_email],
-                            outputs=[admin_table_output, admin_user_select])
+    with_loader(refresh_admin_btn.click, "Refreshing users…",
+                dict(fn=refresh_admin_fn, inputs=[current_email],
+                     outputs=[admin_table_output, admin_user_select]))
 
-    send_reminder_btn.click(fn=send_reminder_fn,
-                            inputs=[current_email, admin_user_select, admin_reminder_msg],
-                            outputs=[admin_status, admin_table_output])
+    with_loader(send_reminder_btn.click, "Sending the reminder…",
+                dict(fn=send_reminder_fn,
+                     inputs=[current_email, admin_user_select, admin_reminder_msg],
+                     outputs=[admin_status, admin_table_output]))
 
-    send_bulk_btn.click(fn=send_bulk_reminder_fn, inputs=[current_email, admin_reminder_msg],
-                        outputs=[admin_status, admin_table_output])
+    with_loader(send_bulk_btn.click, "Sending reminders…",
+                dict(fn=send_bulk_reminder_fn, inputs=[current_email, admin_reminder_msg],
+                     outputs=[admin_status, admin_table_output]))
 
-    remove_user_btn.click(fn=remove_user_fn,
-                          inputs=[current_email, admin_user_select, admin_remove_confirm],
-                          outputs=[admin_remove_status, admin_table_output,
-                                   admin_user_select, admin_remove_confirm])
+    with_loader(remove_user_btn.click, "Removing the user…",
+                dict(fn=remove_user_fn,
+                     inputs=[current_email, admin_user_select, admin_remove_confirm],
+                     outputs=[admin_remove_status, admin_table_output,
+                              admin_user_select, admin_remove_confirm]))
 
 # None of these handlers are meant to be called as an API: keep every event UI-only.
+# Gradio's own progress tracker (a spinner over each output) is off everywhere too;
+# the SkinSense loader covers the waits instead.
 for _fn in demo.fns.values():
     _fn.api_visibility = "private"
+    _fn.show_progress = "hidden"
 
 
 class GzipAppPage:
